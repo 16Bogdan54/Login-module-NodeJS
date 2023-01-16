@@ -1,5 +1,6 @@
 import {Box, Center, Text, Container} from "@chakra-ui/react";
-import {CustomForm} from './components/CustomForm/CustomForm'
+import {Registration} from "./components/pages/registration/Registration";
+import {Login} from "./components/pages/login/Login";
 
 // main component
 const App = () => {
@@ -8,10 +9,8 @@ const App = () => {
        <Center bg='tomato' h="15vh" w='100%'>
             <Text fontSize='4xl' as='b'>A login system test</Text>
        </Center>
-        <Container>
-            <Center>
-                <CustomForm/>
-            </Center>
+        <Container p={10}>
+           <Registration/>
         </Container>
     </Box>
   );
