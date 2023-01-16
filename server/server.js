@@ -16,7 +16,7 @@ const db = mysql.createConnection({
 app.post('/register', (req, res) => {
     const q = "INSERT INTO test {username, password} VALUES (?,?)"
 
-    db.query(q, [email, password])
+    db.query(q, [user.email, user.password])
 })
 
 app.listen(port)

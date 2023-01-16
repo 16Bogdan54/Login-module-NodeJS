@@ -8,10 +8,6 @@ export const Registration = () => {
         password: "",
     }))
 
-    useEffect(() => {
-        console.log(user)
-    }, [user])
-
     return (
         <Center>
             <CustomForm type="registration" user={user} setUser={setUser}/>
