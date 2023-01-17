@@ -2,7 +2,6 @@ import {Box, Center, Text, Container} from "@chakra-ui/react";
 import {Registration} from "./components/pages/registration/Registration";
 import {Login} from "./components/pages/login/Login";
 
-// main component
 const App = () => {
   return (
     <Box w="100%" h="100vh">
