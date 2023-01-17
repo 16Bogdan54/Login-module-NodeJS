@@ -10,6 +10,7 @@ const App = () => {
        </Center>
         <Container p={10}>
            <Registration/>
+            <Login/>
         </Container>
     </Box>
   );
