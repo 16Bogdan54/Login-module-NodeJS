@@ -1,6 +1,10 @@
 import express from 'express';
 import mysql from 'mysql2';
 import cors from 'cors';
+import bcrypt, {hash} from 'bcrypt';
+
+
+const saltRounds  = 3;
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -16,13 +20,14 @@ const db = mysql.createConnection({
 })
 
 app.post('/register', (req, res) => {
-    console.log(req.body)
     const username = req.body.email;
     const password = req.body.password;
 
-    const q = "INSERT INTO user (username, password) VALUES (?,?)"
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+        const q = "INSERT INTO user (username, password) VALUES (?,?)"
 
-    db.query(q, [username, password])
+        db.query(q, [username, password])
+    })
 })
 
 app.post('/login', (req, res) => {
@@ -33,7 +38,17 @@ app.post('/login', (req, res) => {
 
     db.query(q, [username, password], (err, result) => {
         if (err) console.log(err);
-        result ? console.log("success") : res.send("no user found")
+        if(result) {
+            bcrypt.compare(password, result.password, (err, res) => {
+                if (res) {
+                    req.session.user = result;
+                    console.log(req.session.user);
+                    res.send(result);
+                } else {
+                    res.send({ message: "Wrong username/password combination!" });
+                }
+            })
+        }
     });
 })
 
