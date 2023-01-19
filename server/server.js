@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import session from 'express-session'
 
-const saltRounds  = 3;
+const saltRounds = 10;
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -29,7 +29,7 @@ app.use(
         resave: false,
         saveUninitialized: false,
         cookie: {
-            expires: 60 * 60 * 24,
+            expires: 600**2,
         },
     })
 );
@@ -67,12 +67,10 @@ app.post('/login', (req, res) => {
             bcrypt.compare(password, result[0].password, (error, response) => {
                 if (response) {
                     req.session.user = result;
-                    console.log(req.session.user);
                     res.send(result);
-                    console.log("success")
-                } else {
-                    res.send({ message: "Wrong username/password combination!" });
                 }
+
+                if (response) res.send({ message: "Wrong username/password combination!" });
             });
         }
 
