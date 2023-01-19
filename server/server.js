@@ -1,7 +1,7 @@
 import express from 'express';
 import mysql from 'mysql2';
 import cors from 'cors';
-import bcrypt, {hash} from 'bcrypt';
+import bcrypt from 'bcrypt';
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import session from 'express-session'
@@ -48,7 +48,7 @@ app.post('/register', (req, res) => {
     bcrypt.hash(password, saltRounds, (err, hash) => {
         const q = "INSERT INTO user (username, password) VALUES (?,?)"
 
-        db.query(q, [username, password])
+        db.query(q, [username, hash])
     })
 })
 
@@ -56,21 +56,27 @@ app.post('/login', (req, res) => {
     const username = req.body.email;
     const password = req.body.password;
 
-    const q = "SELECT * FROM user WHERE username = ? AND password = ?"
+    const q = "SELECT * FROM user WHERE username = ?"
 
-    db.query(q, [username, password], (err, result) => {
-        if (err) console.log(err);
-        if(result) {
-            bcrypt.compare(password, result.password, (err, res) => {
-                if (res) {
+    db.query(q, username,
+        (err, result) => {
+
+        if (err) res.send({error: err})
+
+        if(result.length > 0) {
+            bcrypt.compare(password, result[0].password, (error, response) => {
+                if (response) {
                     req.session.user = result;
                     console.log(req.session.user);
                     res.send(result);
+                    console.log("success")
                 } else {
                     res.send({ message: "Wrong username/password combination!" });
                 }
-            })
+            });
         }
+
+        if(result.length < 0) res.send({ message: "User doesn't exist" });
     });
 })
 
